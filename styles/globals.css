@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+
+
+.fc-license-message {
+  display: none;
+}
+
+.fc-dayGridMonth-view {
+  font-size: 12px;
+}
+
+.fc-header-toolbar {
+  font-size: 12px;
+  margin-bottom: 0px;
+}
