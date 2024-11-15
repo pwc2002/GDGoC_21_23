@@ -17,7 +17,7 @@ export function ScholarshipNotice() {
       </div>
       <div className="flex flex-col w-full max-w-[90%] h-screen absolute top-20 left-10 px-4">
         <div className="text-left text-2xl font-bold relative top-10">
-          학부 공지사항
+          장학금 안내
         </div>
         <div className="relative top-10 text-xl text-gray-600/75 font-semibold">
           {scholarships.map((notice) => (
