@@ -14,6 +14,20 @@
 }
 
 .fc-header-toolbar {
-  font-size: 12px;
-  margin-bottom: 0px;
+  font-size: 30px !important;
+  font-weight: 700 !important;
+  margin-bottom: 17px !important;
+  margin-left: 39px !important;
+  margin-top: 23px !important;
+
+}
+
+body {
+  overflow: hidden;
+}
+
+
+.fc-toolbar-title {
+  font-size: 30px !important;
+  font-weight: 700 !important;
 }
