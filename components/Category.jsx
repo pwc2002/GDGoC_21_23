@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-export default function Category() {
+export default function Category({ toggleChecklist, setIsCategoryVisible }) {
     const [showEmployment, setShowEmployment] = useState(false);
     const [showDepartment, setShowDepartment] = useState(false);
     const [showScholarship, setShowScholarship] = useState(false);
@@ -38,18 +38,23 @@ export default function Category() {
 
     return (
         <>
-            <div className="absolute top-12 left-5">
-                <Image src="/menu.png" alt="category" width={25} height={25} />
-            </div>
+            <Image
+                src="/menu.png"
+                alt="category"
+                width={25}
+                height={25}
+                className='absolute top-9 left-6 cursor-pointer'
+                onClick={()=>{toggleChecklist()}}
+            />
             
-            <div className="flex flex-col w-full h-screen justify-start items-start pl-5 pt-32">
+            <div className="flex flex-col w-screen h-screen justify-start items-start pl-5 pt-32">
                 <div className="text-left text-xl font-bold space-y-2 pl-3">
                     <button onClick={handleEmploymentClick} className="mb-2 text-left focus:outline-none">
                         전체 공지사항
                     </button>
                     {showEmployment && (
                         <div className="flex flex-col pl-5 text-xl text-gray-400 space-y-2">
-                            <p>취업 공지/후기</p>
+                            <p onClick={()=>{setIsCategoryVisible(false)}}>취업 공지/후기</p>
                             <p>민원신청/불편 신고</p>
                             <p>학교발전 건의함</p>
                             <p>분실물 센터</p>
