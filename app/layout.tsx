@@ -52,11 +52,11 @@ export default function RootLayout({
       <head />
       <body
         className={`
-          min-h-screen bg-black antialiased ${pretendard.className}`}
+          h-[100dvh] bg-black antialiased ${pretendard.className}`}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
-          <div className="relative flex flex-col h-screen items-center">
-            <main className="max-w-[768px] w-screen h-full border-1 border-black bg-white px-5">
+        <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
+          <div className="relative flex flex-col h-[100dvh] items-center">
+            <main className="max-w-[768px] w-screen h-full bg-white px-5 text-black">
               {children}
             </main>
           </div>
