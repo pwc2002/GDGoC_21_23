@@ -4,6 +4,7 @@ import { Link } from "@nextui-org/link";
 import clsx from "clsx";
 
 import { Providers } from "./providers";
+import Head from "next/head";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
@@ -49,18 +50,18 @@ export default function RootLayout({
 }) {
   return (
     <html suppressHydrationWarning lang="en" className={`${pretendard.variable}`}>
-      <head />
+      <Head>
+      <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;" />
+      </Head>
       <body
         className={`
           h-[100dvh] bg-black antialiased ${pretendard.className}`}
       >
-        <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <div className="relative flex flex-col h-[100dvh] items-center">
-            <main className="max-w-[768px] w-screen h-full bg-white px-5 text-black">
+            <main id="size" className="relative max-w-[768px] w-screen h-full bg-white px-5 ">
               {children}
             </main>
           </div>
-        </Providers>
       </body>
     </html>
   );
