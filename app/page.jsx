@@ -38,7 +38,7 @@ export default function Home() {
   };
 
   return (
-    <div className='w-full h-full pb-10' onClick={closeChecklist}>
+    <div className='w-full h-full pb-[1px]' onClick={closeChecklist}>
       <Image
         src="/menu.png"
         alt="menu"
@@ -48,9 +48,9 @@ export default function Home() {
           e.stopPropagation();
           toggleChecklist();
         }}
-        className='absolute top-9 left-6 cursor-pointer'
+        className='absolute top-3 left-6 cursor-pointer'
       />
-      <Avatar className='absolute top-7 right-6 cursor-pointer w-[33px] h-[33px]'
+      <Avatar className='absolute top-1 right-6 cursor-pointer w-[33px] h-[33px]'
         onClick={()=>{
           router.push('/login');
         }}
