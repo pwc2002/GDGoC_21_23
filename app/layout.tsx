@@ -11,6 +11,7 @@ import { fontSans } from "@/config/fonts";
 import { Navbar } from "@/components/navbar";
 
 import localFont from "next/font/local"
+import SessionWrapper from "@/components/SessionWrapper";
 
 const pretendard = localFont({
   src: "../public/fonts/PretendardVariable.woff2",
@@ -51,17 +52,19 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning lang="en" className={`${pretendard.variable}`}>
       <Head>
-      <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;" />
+        <meta name="viewport" content="initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;" />
       </Head>
       <body
         className={`
           h-[100dvh] bg-black antialiased ${pretendard.className}`}
       >
+        <SessionWrapper>
           <div className="relative flex flex-col h-[100dvh] items-center">
             <main id="size" className="relative max-w-[768px] w-screen h-full bg-white px-5 pb-[30px] ">
               {children}
             </main>
           </div>
+        </SessionWrapper>
       </body>
     </html>
   );
