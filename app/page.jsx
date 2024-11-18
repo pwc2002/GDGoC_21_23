@@ -16,15 +16,15 @@ export default function Home() {
   const router = useRouter();
 
   const toggleChecklist = () => {
-    setIsChecklistOpen(!isChecklistOpen);
-  }
+    setIsChecklistOpen((prev) => !prev);
+  };
 
   const closeChecklist = () => {
     if (isChecklistOpen) {
       setIsChecklistOpen(false);
       setIsCategoryVisible(true);
     }
-  }
+  };
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -50,12 +50,13 @@ export default function Home() {
         }}
         className='absolute top-3 left-6 cursor-pointer'
       />
-      <Avatar className='absolute top-1 right-6 cursor-pointer w-[33px] h-[33px]'
-        onClick={()=>{
+      <Avatar
+        className='absolute top-1 right-6 cursor-pointer w-[33px] h-[33px]'
+        onClick={() => {
           router.push('/login');
         }}
       />
-      <div 
+      <div
         className={`absolute top-0 left-0 h-full bg-white transition-transform transform ${isChecklistOpen ? 'translate-x-0' : '-translate-x-full'} z-50`}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
