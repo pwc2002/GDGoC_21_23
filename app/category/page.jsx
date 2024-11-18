@@ -1,15 +1,15 @@
 "use client";
-import Image from 'next/image';
-import React, { useState } from 'react';
+import Image from "next/image";
+import React, { useState } from "react";
 
-export default function Category() {
+export default function CategoryPage() {
     const [showEmployment, setShowEmployment] = useState(false);
     const [showDepartment, setShowDepartment] = useState(false);
     const [showScholarship, setShowScholarship] = useState(false);
     const [showClub, setShowClub] = useState(false);
 
     const handleEmploymentClick = () => {
-        setShowEmployment(!showEmployment);
+        setShowEmployment((prev) => !prev);
         setShowDepartment(false);
         setShowScholarship(false);
         setShowClub(false);
@@ -17,7 +17,7 @@ export default function Category() {
 
     const handleDepartmentClick = () => {
         setShowEmployment(false);
-        setShowDepartment(!showDepartment);
+        setShowDepartment((prev) => !prev);
         setShowScholarship(false);
         setShowClub(false);
     };
@@ -25,7 +25,7 @@ export default function Category() {
     const handleScholarshipClick = () => {
         setShowEmployment(false);
         setShowDepartment(false);
-        setShowScholarship(!showScholarship);
+        setShowScholarship((prev) => !prev);
         setShowClub(false);
     };
 
@@ -33,7 +33,7 @@ export default function Category() {
         setShowEmployment(false);
         setShowDepartment(false);
         setShowScholarship(false);
-        setShowClub(!showClub);
+        setShowClub((prev) => !prev);
     };
 
     return (

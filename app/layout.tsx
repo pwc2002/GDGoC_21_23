@@ -58,7 +58,7 @@ export default function RootLayout({
           h-[100dvh] bg-black antialiased ${pretendard.className}`}
       >
           <div className="relative flex flex-col h-[100dvh] items-center">
-            <main id="size" className="relative max-w-[768px] w-screen h-full bg-white px-5 ">
+            <main id="size" className="relative max-w-[768px] w-screen h-full bg-white px-5 pb-[30px] ">
               {children}
             </main>
           </div>
