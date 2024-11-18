@@ -3,7 +3,7 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
 
-export default function LoginComponent() {
+export default function LoginComponent({ setViewPage }) {
   return (
     <div className="flex flex-col w-full h-screen justify-center items-center">
       <div className="w-full max-w-sm text-left pl-3 text-2xl font-bold mb-2">
@@ -32,9 +32,9 @@ export default function LoginComponent() {
         <span className="mx-2 text-gray-500">또는</span>
         <div className="flex-grow border-t border-gray-300"></div>
       </div>
-      <Link href="/">
-        <button className="text-gray-500 underline">다른 이메일로 로그인하기</button>
-      </Link>
+        <button className="text-gray-500 underline" onClick={()=>{
+          setViewPage('signup1');
+        }}>다른 이메일로 로그인하기</button>
     </div>
   );
 }
