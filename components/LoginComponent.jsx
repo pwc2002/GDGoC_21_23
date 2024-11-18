@@ -16,7 +16,7 @@ export default function LoginComponent() {
       </div>
 
       <div className="flex flex-col items-center w-full max-w-md mt-36 space-y-3">
-        <button className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
+        <button onClick={() => signIn('google')} className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
           <Image src="/구글버튼.png" alt="Google Icon" width={330} height={50} />
         </button>
         <button onClick={() => signIn('kakao')} className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
