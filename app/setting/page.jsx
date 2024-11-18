@@ -1,13 +1,6 @@
-import { Link, LinkIcon } from "@nextui-org/link";
-import { Snippet } from "@nextui-org/snippet";
-import { Code } from "@nextui-org/code";
-import { button as buttonStyles } from "@nextui-org/theme";
+import { Link } from "@nextui-org/link";
 
-import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
-
-export default function Home() {
+export default function SettingPage() {
   return (
     <>
       <div className="flex flex-col w-full justify-center items-center text-5xl font-bold h-3/4">
