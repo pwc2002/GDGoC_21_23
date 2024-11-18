@@ -1,0 +1,58 @@
+[
+  {
+    "key": "Prontier",
+    "label": "프런티어학부대학"
+  },
+  {
+    "key": "Engineering",
+    "label": "공과대학"
+  },
+  {
+    "key": "Nature_Science",
+    "label": "자연과학대학"
+  },
+  {
+    "key": "Business",
+    "label": "경영대학"
+  },
+  {
+    "key": "Teaching",
+    "label": "사범대학"
+  },
+  {
+    "key": "Social_Science",
+    "label": "사회과학대학"
+  },
+  {
+    "key": "Humanities",
+    "label": "문과대학"
+  },
+  {
+    "key": "Medicine",
+    "label": "의과대학"
+  },
+  {
+    "key": "Nursing",
+    "label": "간호대학"
+  },
+  {
+    "key": "Future_Convergence",
+    "label": "미래융합대학"
+  },
+  {
+    "key": "Arts_Sports",
+    "label": "예술체육대학"
+  },
+  {
+    "key": "Global_Convergence",
+    "label": "국제학부"
+  },
+  {
+    "key": "Software_Convergence",
+    "label": "소프트웨어융합대학"
+  },
+  {
+    "key": "Bio",
+    "label": "바이오시스템융합학부"
+  }
+]
