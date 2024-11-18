@@ -12,13 +12,13 @@ export default function LoginPage() {
   const renderView = () => {
     switch (viewPage) {
       case 'login':
-        return <LoginComponent />;
+        return <LoginComponent setViewPage={setViewPage} />;
       case 'signup1':
-        return <Signup1Component />;
+        return <Signup1Component setViewPage={setViewPage} />;
       case 'signup2':
-        return <Signup2Component />;
+        return <Signup2Component setViewPage={setViewPage} />;
       default:
-        return <LoginComponent />;
+        return <LoginComponent setViewPage={setViewPage} />;
     }
   };
 
