@@ -1,4 +1,5 @@
 import { Link } from '@nextui-org/link';
+import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import React from 'react';
 
@@ -18,7 +19,7 @@ export default function LoginComponent() {
         <button className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
           <Image src="/구글버튼.png" alt="Google Icon" width={330} height={50} />
         </button>
-        <button className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
+        <button onClick={() => signIn('kakao')} className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
           <Image src="/카톡버튼.png" alt="KakaoTalk Icon" width={330} height={50} />
         </button>
         <button className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
