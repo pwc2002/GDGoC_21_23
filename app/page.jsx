@@ -38,7 +38,7 @@ export default function Home() {
   };
 
   return (
-    <div className='w-full h-full pb-[1px]' onClick={closeChecklist}>
+    <div className='w-full h-full mb-[10px]' onClick={closeChecklist}>
       <Image
         src="/menu.png"
         alt="menu"

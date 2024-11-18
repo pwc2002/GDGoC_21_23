@@ -5,12 +5,16 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import koLocale from '@fullcalendar/core/locales/ko';
+import {Divider} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Accordion, AccordionItem} from "@nextui-org/react";
 
 export default function FullCalendar() {
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const calendarRef = useRef(null);
   const touchStartX = useRef(0);
   const touchStartTime = useRef(0);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
+  const [selectedDate, setSelectedDate] = useState();
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -57,6 +61,10 @@ export default function FullCalendar() {
 
   };
 
+  const handleDayCellClick = (date) => {
+    onOpen();
+  };
+
   const events = [
     { title: '개인일정', start: '2024-11-04', resourceId: 'e'},
     { title: '개인일정', start: '2024-11-04', end: '2024-11-07', resourceId: 'e'},
@@ -72,6 +80,7 @@ export default function FullCalendar() {
   ];
 
   return (
+    <>
     <div
       className='w-full h-full'
       onTouchStart={handleTouchStart}
@@ -97,7 +106,7 @@ export default function FullCalendar() {
         nowIndicator={true}
         editable={true}
         selectable={true}
-        dayMaxEvents={true}
+        dayMaxEvents={false}
         selectMirror={true}
         resources={[
           { id: 'a', title: 'Auditorium A', eventColor: '#EA4335' },
@@ -125,7 +134,108 @@ export default function FullCalendar() {
           }
         }}
         datesSet={handleDatesSet}
+        dayCellDidMount={(info) => {
+          
+          const divs = info.el.firstChild.querySelectorAll('div')[1].querySelectorAll('div');
+          console.log(1,info.el.firstChild.querySelectorAll('div')[1]);
+          console.log(2,info.el.firstChild)
+          console.log(3,info.el.firstChild.querySelectorAll('div')[1].querySelectorAll('div'));
+          divs.forEach((div) => {
+            console.log("123",div);
+          });
+          info.el.firstChild.addEventListener('click', (e) => {
+            console.log(e);
+            const adjustedDate = new Date(info.date);
+            const startX = e.target.getBoundingClientRect().left;
+            const clickX = e.clientX;
+            const dayWidth = e.target.offsetWidth;
+            const daysFromStart = Math.floor((clickX - startX) / dayWidth);
+            adjustedDate.setDate(adjustedDate.getDate() + daysFromStart);
+            setSelectedDate(adjustedDate);
+            console.log(startX, clickX, dayWidth, daysFromStart);
+            onOpen();
+          });
+
+          // info.el.firstChild.querySelectorAll('div')[1].addEventListener('click', (e) => {
+          //   e.stopPropagation();
+          //   console.log('clicked');
+          // });
+          
+        }}
       />
     </div>
+    <Modal 
+        isOpen={isOpen} 
+        placement='center'
+        size="sm"
+        onOpenChange={onOpenChange}
+        className='mx-7 bg-[#f5f5f5] h-[85%]'
+        scrollBehavior='inside'
+        classNames={{
+          closeButton: 'pt-6 pr-6',
+        }}
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className='flex flex-col pt-6'>
+                <p className='text-xl font-bold'>{`${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`}</p>
+              </ModalHeader>
+              <ModalBody className='gap-0 mt-5'>
+                <div className='flex flex-col'>
+                  <p className='text-sm mb-[10px] font-bold text-[#888888]'>학사일정</p>
+                  <Accordion variant="splitted"
+                  className='px-0'
+                  >
+                    <AccordionItem 
+                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                    key="1" 
+                    aria-label="Accordion 1" 
+                    title="2024학년도 2학기 성장현 후배드림 장학기금 장학생 선발 안내"
+                    >
+                       가. 선발 대상 : 가정형편이 어려운 환경 속에 본인의 꿈을 잃지 않으며 평소 생활태도가 성실하고 꿈과 비전에 대한 실현의지가 확고한 재학생
+                        <br/>나. 제출 서류 : 진로계획서(자유양식), 성적증명서, 가계곤란 증빙서류(학자금지원구간 통지서)
+                        <br/>다. 선발 인원 : 학기당 1명
+                        (각 대학별 1명씩, 매학기 신규 선발)
+                          라. 장학 금액 : 학기당 100만원/명
+                        <br/>마. 제출 기한 : 11. 25. (월)
+                        <br/>바. 제출 방법 : 스캔본 이메일 제출 : yujin@inha.ac.kr 
+                        <br/>
+                        <a href="https://cse.inha.ac.kr/cse/888/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGY3NlJTJGMjQyJTJGMTM5NTk4JTJGYXJ0Y2xWaWV3LmRvJTNGcGFnZSUzRDElMjZzcmNoQ29sdW1uJTNEJTI2c3JjaFdyZCUzRCUyNmJic0NsU2VxJTNEJTI2YmJzT3BlbldyZFNlcSUzRCUyNnJnc0JnbmRlU3RyJTNEJTI2cmdzRW5kZGVTdHIlM0QlMjZpc1ZpZXdNaW5lJTNEZmFsc2UlMjZwYXNzd29yZCUzRCUyNg%3D%3D" className='text-[#2485F4]'>자세히 보기</a>
+                    </AccordionItem>
+                    <AccordionItem key="2" 
+                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                    aria-label="Accordion 2" title="2024학년도 동계 학부연구생 모집 안내">
+                    2024학년도 동계 학부연구생 모집 안내
+                    </AccordionItem>
+                    <AccordionItem key="3"
+                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                    aria-label="Accordion 3" title="학과별 재학생 대상 전공능력진단 실시 안내">
+                    학과별 재학생 대상 전공능력진단 실시 안내
+                    </AccordionItem>
+                  </Accordion>
+                  <Divider className='my-5'/>
+                  <p className='text-sm mb-[10px] font-bold text-[#888888]'>개인일정</p>
+                  <Accordion variant="splitted"
+                  className='px-0'
+                  >
+                    <AccordionItem key="2" 
+                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                    aria-label="Accordion 2" title="데이트💗">
+                    2024학년도 동계 학부연구생 모집 안내
+                    </AccordionItem>
+                    <AccordionItem key="3" 
+                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                    aria-label="Accordion 3" title="동아리 회의">
+                    학과별 재학생 대상 전공능력진단 실시 안내
+                    </AccordionItem>
+                  </Accordion>
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+    </>
   );
 }

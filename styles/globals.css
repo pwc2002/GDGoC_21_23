@@ -71,4 +71,18 @@ body {
   width: 100% !important;
   text-align: center !important;
   font-weight: 600 !important;
+  font-size: 12px !important;
+}
+
+.fc-event-title {
+  padding:0px !important;
+}
+
+.fc-daygrid-event{
+  margin-top: 2px !important;
+  border-radius: 0px !important;
+}
+
+.fc-h-event {
+  border: 0px !important;
 }
