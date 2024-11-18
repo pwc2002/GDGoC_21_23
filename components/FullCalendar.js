@@ -8,7 +8,9 @@ import interactionPlugin from '@fullcalendar/interaction';
 import resourceTimelinePlugin from '@fullcalendar/resource-timeline'
 import koLocale from '@fullcalendar/core/locales/ko';
 import {Divider} from "@nextui-org/react";
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Accordion, AccordionItem} from "@nextui-org/react";
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Accordion, AccordionItem, Input} from "@nextui-org/react";
+import { DatePicker } from "@nextui-org/react";
+import { Textarea } from "@nextui-org/input";
 
 export default function FullCalendar() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -17,6 +19,21 @@ export default function FullCalendar() {
   const touchStartTime = useRef(0);
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [selectedDate, setSelectedDate] = useState();
+  const [isAddingEvent, setIsAddingEvent] = useState(false);
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [title, setTitle] = useState("");
+  const [isValid, setIsValid] = useState(false);
+  const [dateError, setDateError] = useState(false);
+
+  useEffect(() => {
+    const hasRequiredFields = startDate && endDate && title.trim() !== "";
+    const isDateValid = startDate && endDate ? 
+      new Date(startDate) <= new Date(endDate) : true;
+
+    setDateError(!isDateValid && startDate && endDate);
+    setIsValid(hasRequiredFields && isDateValid);
+  }, [startDate, endDate, title]);
 
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
@@ -31,10 +48,8 @@ export default function FullCalendar() {
       const calendarApi = calendarRef.current.getApi();
 
       if (touchStartX.current - touchEndX > 50) {
-        // 왼쪽으로 스와이프하면 다음 달로 이동
         calendarApi.next();
       } else if (touchEndX - touchStartX.current > 50) {
-        // 오른쪽으로 스와이프하면 이전 달로 이동
         calendarApi.prev();
       }
     }
@@ -75,7 +90,6 @@ const handleEventDragStop = () => {
     console.log("daydivs", daydivs);
     console.log("plandivs", plandivs);
 
-    // 첫 번째 div 안의 a 태그에서 aria-label 속성의 날짜를 가져옴
     const firstDayDiv = daydivs[0];
 
     for (let i = 0; i < plandivs.length; i++) {
@@ -169,6 +183,27 @@ const handleEventDragStop = () => {
     { title: '개인일정', start: '2024-11-24', end: '2024-11-26', resourceId: 'e'},
     { title: '개인일정', start: '2024-11-27', end: '2024-11-30', resourceId: 'e'},
   ];
+
+  const handleAddEventClick = () => {
+    setIsAddingEvent(true);
+    setStartDate(null);
+    setEndDate(null);
+    setTitle("");
+    setDateError(false);
+    setIsValid(false);
+  };
+
+  const handleSaveEvent = () => {
+    if (isValid) {
+      console.log("일정 추가:", { startDate, endDate, title });
+      setIsAddingEvent(false);
+    }
+  };
+
+  const handleModalClose = () => {
+    setIsAddingEvent(false);
+    onOpenChange(false);
+  };
 
   return (
     <>
@@ -268,7 +303,7 @@ const handleEventDragStop = () => {
         isOpen={isOpen} 
         placement='center'
         size="sm"
-        onOpenChange={onOpenChange}
+        onOpenChange={handleModalClose}
         className='mx-7 bg-[#f5f5f5] h-[85%]'
         scrollBehavior='inside'
         classNames={{
@@ -282,56 +317,133 @@ const handleEventDragStop = () => {
                 <p className='text-xl font-bold'>{`${selectedDate.getMonth() + 1}월 ${selectedDate.getDate()}일`}</p>
               </ModalHeader>
               <ModalBody className='gap-0 mt-5'>
-                <div className='flex flex-col'>
-                  <p className='text-sm mb-[10px] font-bold text-[#888888]'>학사일정</p>
-                  <Accordion variant="splitted"
-                  className='px-0'
-                  >
-                    <AccordionItem 
-                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
-                    key="1" 
-                    aria-label="Accordion 1" 
-                    title="2024학년도 2학기 성장현 후배드림 장학기금 장학생 선발 안내"
+                {isAddingEvent ? (
+                  <div className='mt-[60px] flex flex-col'>
+                    <div className='flex font-bold text-2xl'>일정을 추가해볼까요?</div>
+                    <div className='pt-5'>
+                      <div className='pb-5'>
+                        <DatePicker 
+                          label="시작 날짜" 
+                          className="w-full"
+                          value={startDate}
+                          onChange={setStartDate}
+                          isInvalid={dateError}
+                        />
+                      </div>
+                      <div>
+                        <DatePicker 
+                          label="종료 날짜" 
+                          className="w-full"
+                          value={endDate}
+                          onChange={setEndDate}
+                          isInvalid={dateError}
+                          errorMessage={dateError ? "종료 날짜는 시작 날짜보다 같거나 늦어야 합니다" : ""}
+                        />
+                      </div>
+                    </div>
+                    <div className='pt-5 flex flex-wrap md:flex-nowrap w-full'>
+                      <Input 
+                        type="text"
+                        label="제목" 
+                        placeholder="제목을 입력해주세요."
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        isRequired
+                      />
+                      <Textarea
+                        label="내용"
+                        placeholder="내용을 입력해주세요."
+                        className="w-full pt-5"
+                        maxRows="3"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className='flex flex-col'>
+                    <p className='text-sm mb-[10px] font-bold text-[#888888]'>학사일정</p>
+                    <Accordion variant="splitted"
+                    className='px-0'
                     >
-                       가. 선발 대상 : 가정형편이 어려운 환경 속에 본인의 꿈을 잃지 않으며 평소 생활태도가 성실하고 꿈과 비전에 대한 실현의지가 확고한 재학생
-                        <br/>나. 제출 서류 : 진로계획서(자유양식), 성적증명서, 가계곤란 증빙서류(학자금지원구간 통지서)
-                        <br/>다. 선발 인원 : 학기당 1명
-                        (각 대학별 1명씩, 매학기 신규 선발)
-                          라. 장학 금액 : 학기당 100만원/명
-                        <br/>마. 제출 기한 : 11. 25. (월)
-                        <br/>바. 제출 방법 : 스캔본 이메일 제출 : yujin@inha.ac.kr 
-                        <br/>
-                        <a href="https://cse.inha.ac.kr/cse/888/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGY3NlJTJGMjQyJTJGMTM5NTk4JTJGYXJ0Y2xWaWV3LmRvJTNGcGFnZSUzRDElMjZzcmNoQ29sdW1uJTNEJTI2c3JjaFdyZCUzRCUyNmJic0NsU2VxJTNEJTI2YmJzT3BlbldyZFNlcSUzRCUyNnJnc0JnbmRlU3RyJTNEJTI2cmdzRW5kZGVTdHIlM0QlMjZpc1ZpZXdNaW5lJTNEZmFsc2UlMjZwYXNzd29yZCUzRCUyNg%3D%3D" className='text-[#2485F4]'>자세히 보기</a>
-                    </AccordionItem>
-                    <AccordionItem key="2" 
-                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
-                    aria-label="Accordion 2" title="2024학년도 동계 학부연구생 모집 안내">
-                    2024학년도 동계 학부연구생 모집 안내
-                    </AccordionItem>
-                    <AccordionItem key="3"
-                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
-                    aria-label="Accordion 3" title="학과별 재학생 대상 전공능력진단 실시 안내">
-                    학과별 재학생 대상 전공능력진단 실시 안내
-                    </AccordionItem>
-                  </Accordion>
-                  <Divider className='my-5'/>
-                  <p className='text-sm mb-[10px] font-bold text-[#888888]'>개인일정</p>
-                  <Accordion variant="splitted"
-                  className='px-0'
-                  >
-                    <AccordionItem key="2" 
-                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
-                    aria-label="Accordion 2" title="데이트💗">
-                    2024학년도 동계 학부연구생 모집 안내
-                    </AccordionItem>
-                    <AccordionItem key="3" 
-                    classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
-                    aria-label="Accordion 3" title="동아리 회의">
-                    학과별 재학생 대상 전공능력진단 실시 안내
-                    </AccordionItem>
-                  </Accordion>
-                </div>
+                      <AccordionItem 
+                      classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                      key="1" 
+                      aria-label="Accordion 1" 
+                      title={<>
+                        <div className='flex flex-row'>
+                          <div className='flex flex-shrink-0 w-1 mr-2 bg-[#ff4d02]'></div>
+                          <div>2024학년도 2학기 성장현 후배드림 장학기금 장학생 선발 안내</div>
+                        </div>
+                      </>}
+                      >
+                         가. 선발 대상 : 가정형편이 어려운 환경 속에 본인의 꿈을 잃지 않으며 평소 생활태도가 성실하고 꿈과 비전에 대한 실현의지가 확고한 재학생
+                          <br/>나. 제출 서류 : 진로계획서(자유양식), 성적증명서, 가계곤란 증빙서류(학자금지원구간 통지서)
+                          <br/>다. 선발 인원 : 학기당 1명
+                          (각 대학별 1명씩, 매학기 신규 선발)
+                            라. 장학 금액 : 학기당 100만원/명
+                          <br/>마. 제출 기한 : 11. 25. (월)
+                          <br/>바. 제출 방법 : 스캔본 이메일 제출 : yujin@inha.ac.kr 
+                          <br/>
+                          <a href="https://cse.inha.ac.kr/cse/888/subview.do?enc=Zm5jdDF8QEB8JTJGYmJzJTJGY3NlJTJGMjQyJTJGMTM5NTk4JTJGYXJ0Y2xWaWV3LmRvJTNGcGFnZSUzRDElMjZzcmNoQ29sdW1uJTNEJTI2c3JjaFdyZCUzRCUyNmJic0NsU2VxJTNEJTI2YmJzT3BlbldyZFNlcSUzRCUyNnJnc0JnbmRlU3RyJTNEJTI2cmdzRW5kZGVTdHIlM0QlMjZpc1ZpZXdNaW5lJTNEZmFsc2UlMjZwYXNzd29yZCUzRCUyNg%3D%3D" className='text-[#2485F4]'>자세히 보기</a>
+                      </AccordionItem>
+                      <AccordionItem key="2" 
+                      classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                      aria-label="Accordion 2" 
+                      title={<>
+                        <div className='flex flex-row'>
+                        <div className='flex flex-shrink-0 w-1 mr-2 bg-[#ff4d02]'></div>
+                          <div>2024학년도 동계 학부연구생 모집 안내</div>
+                        </div>
+                      </>}
+                      >
+                      2024학년도 동계 학부연구생 모집 안내
+                      </AccordionItem>
+                      <AccordionItem key="3"
+                      classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                      aria-label="Accordion 3" title="학과별 재학생 대상 전공능력진단 실시 안내">
+                      학과별 재학생 대상 전공능력진단 실시 안내
+                      </AccordionItem>
+                    </Accordion>
+                    <Divider className='my-5'/>
+                    <p className='text-sm mb-[10px] font-bold text-[#888888]'>개인일정</p>
+                    <Accordion variant="splitted"
+                    className='px-0'
+                    >
+                      <AccordionItem key="2" 
+                      classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                      aria-label="Accordion 2" title="데이트💗">
+                      2024학년도 동계 학부연구생 모집 안내
+                      </AccordionItem>
+                      <AccordionItem key="3" 
+                      classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
+                      aria-label="Accordion 3" 
+                      title={<>
+                        <div className='flex flex-row'>
+                        <div className='flex flex-shrink-0 w-1 mr-2 bg-[#ff4d02]'></div>
+                          <div>동아리 회의</div>
+                        </div>
+                      </>}
+                      >
+                      학과별 재학생 대상 전공능력진단 실시 안내
+                      </AccordionItem>
+                    </Accordion>
+                  </div>
+                )}
               </ModalBody>
+              <ModalFooter>
+                {isAddingEvent ? (
+                  <Button 
+                    className={`w-full text-white ${
+                      isValid ? "bg-blue-600" : "bg-gray-400"
+                    }`}
+                    onClick={handleSaveEvent}
+                    isDisabled={!isValid}
+                  >
+                    일정 추가
+                  </Button>
+                ) : (
+                  <Button onClick={handleAddEventClick} className='w-full text-white'>일정 추가</Button>
+                )}
+              </ModalFooter>
             </>
           )}
         </ModalContent>
