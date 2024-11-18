@@ -1,0 +1,22 @@
+[
+  {
+      "key": "Artificial_Intelligence",
+      "label": "인공지능공학과"
+  },
+  {
+      "key": "Data_Science",
+      "label": "데이터사이언스학과"  
+  },
+  {
+      "key": "Smart_Mobility_Engineering",
+      "label": "스마트모빌리티공학과"
+  },
+  {
+      "key": "Design_Technology",
+      "label": "디자인테크놀로지학과"
+  },
+  {
+      "key": "Computer_Engineering", 
+      "label": "컴퓨터공학과"
+  }
+]

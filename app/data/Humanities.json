@@ -1,0 +1,34 @@
+[
+  {
+    "key": "Korean_Language_Literature",
+    "label": "한국어문학과"
+  },
+  {
+    "key": "History",
+    "label": "사학과"
+  },
+  {
+    "key": "Philosophy",
+    "label": "철학과"
+  },
+  {
+    "key": "China_Studies",
+    "label": "중국학과"
+  },
+  {
+    "key": "Japanese_Language_Culture",
+    "label": "일본어문화학과"
+  },
+  {
+    "key": "English_Language_Literature",
+    "label": "영어영문학과"
+  },
+  {
+    "key": "French_Language_Culture",
+    "label": "프랑스어문화학과"
+  },
+  {
+    "key": "Cultural_Contents_Management",
+    "label": "문화콘텐츠문화경영학과"
+  }
+]
