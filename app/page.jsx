@@ -5,15 +5,21 @@ import Link from 'next/link';
 import Checklist from '@/components/checklist';
 import Category from '@/components/Category';
 import Image from 'next/image';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Avatar } from '@nextui-org/react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
   const [isChecklistOpen, setIsChecklistOpen] = useState(false);
   const [isCategoryVisible, setIsCategoryVisible] = useState(true);
   const touchStartX = useRef(0);
   const router = useRouter();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    console.log("Session data:", session);
+  }, [session]);
 
   const toggleChecklist = () => {
     setIsChecklistOpen((prev) => !prev);
@@ -53,8 +59,13 @@ export default function Home() {
       />
       <Avatar
         className='absolute top-1 right-6 cursor-pointer w-[33px] h-[33px]'
+        src={session?.user?.image}
         onClick={() => {
-          router.push('/login');
+          if (session) {
+            router.push('/settings');
+          } else {
+            router.push('/login');
+          }
         }}
       />
       <div
