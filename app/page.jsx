@@ -17,6 +17,7 @@ export default function Home() {
 
   const toggleChecklist = () => {
     setIsChecklistOpen((prev) => !prev);
+    setIsCategoryVisible(true);
   };
 
   const closeChecklist = () => {
