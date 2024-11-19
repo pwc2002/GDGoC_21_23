@@ -43,11 +43,11 @@ export default function Category({ toggleChecklist, setIsCategoryVisible }) {
                 alt="category"
                 width={25}
                 height={25}
-                className='absolute top-9 left-6 cursor-pointer'
+                className='absolute top-3 left-6 cursor-pointer'
                 onClick={()=>{toggleChecklist()}}
             />
             
-            <div className="flex flex-col w-screen h-screen justify-start items-start pl-5 pt-32">
+            <div className="flex flex-col w-screen h-screen justify-start items-start pl-5 pt-12">
                 <div className="text-left text-xl font-bold space-y-2 pl-3">
                     <button onClick={handleEmploymentClick} className="mb-2 text-left focus:outline-none">
                         전체 공지사항
