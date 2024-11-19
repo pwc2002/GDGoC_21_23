@@ -7,6 +7,7 @@ import {
   DropdownItem,
   Button,
 } from "@nextui-org/react";
+import { useRouter } from 'next/navigation';
 
 // 데이터를 직접 import
 import colleges from "../app/data/Colleges.json";
@@ -24,12 +25,15 @@ import nursing from "../app/data/Nursing.json";
 import social_science from "../app/data/Social_Science.json";
 import software_convergence from "../app/data/Software_Convergence.json";
 import teaching from "../app/data/Teaching.json";
+import { useSession } from 'next-auth/react';
+
 
 export default function Signup2Component({ setViewPage }) {
   const [selectedCollege, setSelectedCollege] = useState(null);
   const [selectedDepartment, setSelectedDepartment] = useState(null);
   const [departments, setDepartments] = useState([]);
-
+  const router = useRouter();
+  const { data: session, update } = useSession();
   // 단과대학별 학과 데이터 매핑
   const departmentMap = {
     Prontier: liberalarts, // 프런티어 학부 데이터 매핑
@@ -137,7 +141,32 @@ export default function Signup2Component({ setViewPage }) {
           color="primary"
           isDisabled={!isValid}
           onClick={() => {
-            setViewPage('login');
+            fetch('/api/signup', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                college: selectedCollege.label,
+                department: selectedDepartment.label,
+              }),
+            })
+              .then(response => response.json())
+              .then(data => {
+                console.log('Success:', data, session);
+                update({
+                  ...session,
+                  user: {
+                    major: selectedDepartment.label,
+                    college: selectedCollege.label,
+                  }
+                });
+                setViewPage('login');
+                router.push('/');
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+              });
           }}
           className={`w-[320px] text-white ${
             isValid ? "bg-blue-600" : "bg-gray-400"

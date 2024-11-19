@@ -30,6 +30,7 @@
 		"@nextui-org/switch": "2.0.34",
 		"@nextui-org/system": "2.2.6",
 		"@nextui-org/theme": "2.2.11",
+		"@prisma/client": "^5.22.0",
 		"@react-aria/ssr": "3.9.4",
 		"@react-aria/visually-hidden": "3.8.12",
 		"clsx": "2.1.1",
@@ -38,6 +39,7 @@
 		"next": "14.2.4",
 		"next-auth": "^4.24.10",
 		"next-themes": "^0.2.1",
+		"prisma": "^5.22.0",
 		"react": "18.3.1",
 		"react-dom": "18.3.1"
 	},

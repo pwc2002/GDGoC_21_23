@@ -56,7 +56,7 @@ export default function FullCalendar() {
   };
 
   const handleDatesSet = (arg) => {
-    console.log(arg);
+    //console.log(arg);
     const startDate = new Date(arg.start).getMonth()+1;
     let endDate = new Date(arg.end).getMonth()+1;
     if(startDate > endDate){
@@ -74,7 +74,7 @@ export default function FullCalendar() {
     }
     
     setCurrentMonth(newMonth);
-    console.log(endDate, startDate, newMonth);
+    //console.log(endDate, startDate, newMonth);
 
   };
 
@@ -83,50 +83,50 @@ export default function FullCalendar() {
   };
 
 const handleEventDragStop = () => {
-  console.log("timer start");
+  //console.log("timer start");
   setTimeout(() => {
     const daydivs = document.getElementsByClassName("fc-daygrid-day-frame");
     const plandivs = document.getElementsByClassName("fc-daygrid-event-harness");
-    console.log("daydivs", daydivs);
-    console.log("plandivs", plandivs);
+    //console.log("daydivs", daydivs);
+    //console.log("plandivs", plandivs);
 
     const firstDayDiv = daydivs[0];
 
     for (let i = 0; i < plandivs.length; i++) {
-      console.log("plandivs[i]", plandivs[i]);
+      //console.log("plandivs[i]", plandivs[i]);
       plandivs[i].addEventListener('click', (event) => {
         const divStartX = plandivs[i].getBoundingClientRect().left;
         const clickX = event.clientX;
         const diffX = clickX - divStartX;
         
         const anchorTag = plandivs[i].querySelector('a');
-        console.log("anchorTag", anchorTag);
+        //console.log("anchorTag", anchorTag);
         let previousSiblingDiv = plandivs[i].parentElement.previousElementSibling;
         while (previousSiblingDiv && !previousSiblingDiv.querySelector('a')) {
           previousSiblingDiv = previousSiblingDiv.previousElementSibling;
         }
         const previousAnchorTag = previousSiblingDiv ? previousSiblingDiv.querySelector('a') : null;
-        console.log("previousAnchorTag", previousAnchorTag);
+        //console.log("previousAnchorTag", previousAnchorTag);
         const ariaLabel = previousAnchorTag ? previousAnchorTag.getAttribute('aria-label') : anchorTag.getAttribute('aria-label');
-        console.log("ariaLabel", ariaLabel);
+        //console.log("ariaLabel", ariaLabel);
         const [year, month, day] = ariaLabel.match(/(\d+)년 (\d+)월 (\d+)일/).slice(1, 4);
-        console.log("year, month, day", year, month, day);
+        //console.log("year, month, day", year, month, day);
         const baseDate = new Date(year, month - 1, day);
-        console.log("baseDate", baseDate);
+        //console.log("baseDate", baseDate);
 
         const dayDivStartX = daydivs[0].getBoundingClientRect().left;
         const dayWidth = daydivs[0].getBoundingClientRect().width;
-        console.log("dayWidth", dayWidth);
+        //console.log("dayWidth", dayWidth);
 
         const test = Math.floor(diffX / dayWidth);
-        console.log("test", test);
+        //console.log("test", test);
 
-        console.log("div 시작점:", divStartX);
-        console.log("클릭된 x좌표:", clickX);
-        console.log("차이값:", diffX);
+        //console.log("div 시작점:", divStartX);
+        //console.log("클릭된 x좌표:", clickX);
+        //console.log("차이값:", diffX);
         const newDate = new Date(baseDate);
         newDate.setDate(newDate.getDate() + test);
-        console.log("새로운 날짜:", newDate);
+        //console.log("새로운 날짜:", newDate);
         setSelectedDate(newDate);
         onOpen();
       });
@@ -136,15 +136,15 @@ const handleEventDragStop = () => {
 
   const handleEventResizeStop = (info) => {
     setTimeout(() => {
-      console.log('Event resized:', info.event);
+      //console.log('Event resized:', info.event);
       const daydiv = info.el.getElementsByClassName("fc-daygrid-day-frame")[0];
       const plandivs = info.el.getElementsByClassName("fc-daygrid-event-harness");
-      console.log("daydiv", daydiv);
-      console.log("plandivs", plandivs);
-      console.log("이엘", info);
+      //console.log("daydiv", daydiv);
+      //console.log("plandivs", plandivs);
+      //console.log("이엘", info);
 
       for (let i = 0; i < plandivs.length; i++) {
-        console.log("plandivs[i]", plandivs[i]);
+        //console.log("plandivs[i]", plandivs[i]);
         plandivs[i].addEventListener('click', (event) => {
           const divStartX = plandivs[i].getBoundingClientRect().left;
           const clickX = event.clientX;
@@ -152,17 +152,17 @@ const handleEventDragStop = () => {
 
           const dayDivStartX = daydiv.getBoundingClientRect().left;
           const dayWidth = daydiv.getBoundingClientRect().width;
-          console.log("dayWidth", dayWidth);
+          //console.log("dayWidth", dayWidth);
 
           const test = Math.floor(diffX / dayWidth);
-          console.log("test", test);
+          //console.log("test", test);
 
-          console.log("div 시작점:", divStartX);
-          console.log("클릭된 x좌표:", clickX);
-          console.log("차이값:", diffX);
+          //console.log("div 시작점:", divStartX);
+          //console.log("클릭된 x좌표:", clickX);
+          //console.log("차이값:", diffX);
           const newDate = new Date(info.date);
           newDate.setDate(newDate.getDate() + test);
-          console.log("새로운 날짜:", newDate);
+          //console.log("새로운 날짜:", newDate);
           setSelectedDate(newDate);
           onOpen();
         });
@@ -195,7 +195,7 @@ const handleEventDragStop = () => {
 
   const handleSaveEvent = () => {
     if (isValid) {
-      console.log("일정 추가:", { startDate, endDate, title });
+      //console.log("일정 추가:", { startDate, endDate, title });
       setIsAddingEvent(false);
     }
   };
@@ -264,31 +264,40 @@ const handleEventDragStop = () => {
           setTimeout(() => {
             const daydiv = info.el.getElementsByClassName("fc-daygrid-day-frame")[0];
             const plandivs = info.el.getElementsByClassName("fc-daygrid-event-harness");
-            console.log("daydiv", daydiv);
-            console.log("plandivs", plandivs);
-            console.log("이엘", info);
+
+            // daydiv에 이벤트를 추가하지만, 이벤트가 plandiv에서 발생하면 무시
+            daydiv.addEventListener('click', (event) => {
+              if (!event.target.closest(".fc-daygrid-event-harness")) {
+                setSelectedDate(info.date);
+                onOpen();
+              }
+            });
+
+            //console.log("daydiv", daydiv);
+            //console.log("plandivs", plandivs);
+            //console.log("이엘", info);
 
             for (let i = 0; i < plandivs.length; i++) {
-              console.log("plandivs[i]", plandivs[i]);
+              //console.log("plandivs[i]", plandivs[i]);
               plandivs[i].addEventListener('click', (event) => {
+                event.stopPropagation(); // 이벤트 전파 중지
                 const divStartX = plandivs[i].getBoundingClientRect().left;
                 const clickX = event.clientX;
                 const diffX = clickX - divStartX;
 
-                
                 const dayDivStartX = daydiv.getBoundingClientRect().left;
                 const dayWidth = daydiv.getBoundingClientRect().width;
-                console.log("dayWidth", dayWidth);
-                
-                const test = Math.floor(diffX / dayWidth);
-                console.log("test", test);
+                //console.log("dayWidth", dayWidth);
 
-                console.log("div 시작점:", divStartX);
-                console.log("클릭된 x좌표:", clickX);
-                console.log("차이값:", diffX);
+                const test = Math.floor(diffX / dayWidth);
+                //console.log("test", test);
+
+                //console.log("div 시작점:", divStartX);
+                //console.log("클릭된 x좌표:", clickX);
+                //console.log("차이값:", diffX);
                 const newDate = new Date(info.date);
                 newDate.setDate(newDate.getDate() + test);
-                console.log("새로운 날짜:", newDate);
+                //console.log("새로운 날짜:", newDate);
                 setSelectedDate(newDate);
                 onOpen();
               });
