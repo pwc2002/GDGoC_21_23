@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import Moredetail from "./Moredetail";
 import { BackIcon } from "@/public/BackIcon";
 
-export default function Checklist({ toggleChecklist, setIsCategoryVisible, showTitle }) {
+export default function Checklist({ toggleChecklist, setIsCategoryVisible, showTitle, setEvents, events }) {
   const [activeNotice, setActiveNotice] = useState(null);
   const [majorNotices, setMajorNotices] = useState([]);
   const [myPlan, setMyPlan] = useState([]);
@@ -54,8 +54,8 @@ export default function Checklist({ toggleChecklist, setIsCategoryVisible, showT
     console.log(notice);
     const isChecked = myPlan.some(plan => plan.title === notice.title);
     const updatedPlan = isChecked
-      ? myPlan.filter(plan => plan.title !== notice.title) // 체크가 되어 있었으면, 필터링으로 제외 후 저장
-      : [...myPlan, notice]; // 체크가 되어 있지 않았으면, 기존 배열에 추가 후 저장
+      ? myPlan.filter(plan => plan.title !== notice.title)
+      : [...myPlan, notice];
 
     console.log(updatedPlan);
 
@@ -67,8 +67,34 @@ export default function Checklist({ toggleChecklist, setIsCategoryVisible, showT
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify( notice ),
+        body: JSON.stringify(notice),
       });
+
+      setEvents((prevEvents) => {
+        let newEvent = {
+          ...notice,
+          start: new Date(notice.startdate).toISOString().split('T')[0],
+          end: new Date(notice.enddate).toISOString().split('T')[0],
+          resourceId: ['a', 'b', 'c', 'd'][Math.floor(Math.random() * 4)],
+        };
+
+        const startDateObj = new Date(newEvent.start);
+        const endDateObj = new Date(newEvent.end);
+        const diffTime = Math.abs(endDateObj - startDateObj);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        if (diffDays > 7) {
+          newEvent.start = new Date(endDateObj.setDate(endDateObj.getDate() - 7)).toISOString().split('T')[0];
+          newEvent.title = newEvent.title + "　";
+          console.log("newEvent", newEvent);
+        }
+
+        const updatedEvents = isChecked
+          ? prevEvents.filter(event => event.title !== notice.title)
+          : [...prevEvents, newEvent];
+        return updatedEvents;
+      });
+
     } catch (error) {
       console.error('Error updating myplan:', error);
     }
