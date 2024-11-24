@@ -4,14 +4,57 @@ import { Avatar } from "@nextui-org/react";
 import { Switch } from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/button";
 import { useSession, signOut } from "next-auth/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { CloseIcon } from "@/public/CloseIcon";
 import { useRouter } from "next/navigation";
 
 export default function App() {
-  const { data: session } = useSession();
-  const [isBlindMode, setIsBlindMode] = useState(session?.user?.mode);
+  const { data: session, status, update } = useSession();
+  const [isBlindMode, setIsBlindMode] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      console.log("Session updated - Current mode:", session.user.mode);
+      setIsBlindMode(session.user.mode === 1);
+    }
+  }, [status, session]);
+
+  const handleModeChange = async (newValue) => {
+    try {
+      const newMode = newValue ? 1 : 0;
+      console.log("Attempting to change mode to:", newMode);
+
+      const response = await fetch('/api/colorset', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mode: newMode
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('API request failed');
+      }
+
+      const data = await response.json();
+      console.log("API Response:", data);
+
+      const result = await update({
+        mode: newMode
+      });
+      
+      console.log("Session update result:", result);
+
+      setIsBlindMode(newMode === 1);
+
+    } catch (error) {
+      console.error("Mode update failed:", error);
+      setIsBlindMode(session?.user?.mode === 1);
+    }
+  };
 
   return (
     <>
@@ -55,7 +98,13 @@ export default function App() {
         <div className="pr-8">
           <div className="mt-4 pb-5 border-b">
             <div className="text-xs text-gray-400 pb-5">화면 모드</div>
-            <Switch defaultSelected={isBlindMode} onValueChange={setIsBlindMode}>색각이상자 모드</Switch>
+            <Switch 
+              isSelected={isBlindMode}
+              onValueChange={handleModeChange}
+              aria-label="Color blind mode toggle"
+            >
+              색각이상자 모드
+            </Switch>
           </div>
           <div className="mt-4 pb-5 border-b">
             <div className="text-xs text-gray-400 pb-5">로그인 정보</div>
