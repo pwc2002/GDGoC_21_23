@@ -553,7 +553,9 @@ const handleEventDragStop = (info) => {
                               </>
                             }
                           >
-                            {event.description}
+                            <div className='max-w-[95%]' style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                              {event.description}
+                            </div>
                           </AccordionItem>
                         ))}
                     </Accordion>
@@ -592,7 +594,9 @@ const handleEventDragStop = (info) => {
                               </>
                             }
                           >
-                            {event.description}
+                            <div className='max-w-[95%]' style={{ wordBreak: 'break-all', overflowWrap: 'break-word' }}>
+                              {event.description}
+                            </div>
                           </AccordionItem>
                         ))}
                     </Accordion>
