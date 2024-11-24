@@ -23,9 +23,19 @@ export default function FullCalendar() {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [dateError, setDateError] = useState(false);
   const [events, setEvents] = useState([]);
+  const [colormatch, setColormatch] = useState([
+    { id: 'a', title: 'Auditorium A', eventColor: '#EA4335' },
+    { id: 'b', title: 'Auditorium B', eventColor: '#F9AB00' },
+    { id: 'c', title: 'Auditorium C', eventColor: '#34A853' },
+    { id: 'd', title: 'Auditorium D', eventColor: '#2485F4' },
+    { id: 'e', title: 'Auditorium E', eventColor: '#888888' },
+  ]);
+  const assignedTitles = [];
+
 
   useEffect(() => {
     const hasRequiredFields = startDate && endDate && title.trim() !== "";
@@ -35,6 +45,7 @@ export default function FullCalendar() {
     setDateError(!isDateValid && startDate && endDate);
     setIsValid(hasRequiredFields && isDateValid);
   }, [startDate, endDate, title]);
+
 
 
   useEffect(() => {
@@ -47,6 +58,19 @@ export default function FullCalendar() {
           },
         });
         const data = await response.json();
+        data.myplan = data.myplan.map(event => {
+          const startDate = new Date(event.startdate);
+          const endDate = new Date(event.enddate);
+          const diffTime = Math.abs(endDate - startDate);
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+          
+          if (diffDays > 7) {
+            event.startdate = new Date(endDate.setDate(endDate.getDate() - 7)).toISOString().split('T')[0];
+            event.title = event.title + "　";
+          }
+          
+          return event;
+        });
         const processedEvents = data.myplan.map(event => ({
           ...event,
           start: new Date(event.startdate).toISOString().split('T')[0],
@@ -111,8 +135,48 @@ export default function FullCalendar() {
     onOpen();
   };
 
-const handleEventDragStop = () => {
-  //console.log("timer start");
+  const handleEventDrop = (info) => {
+    console.log("info", info);
+    console.log("이름", info.event._def.title)
+    console.log("변경된 날짜:", info.event._instance.range.start);
+    const modifyEvent = async () => {
+      try {
+        const response = await fetch('/api/modifyevent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: info.event._def.title,
+            startdate: info.event._instance.range.start,
+            enddate: info.event._instance.range.end,
+          }),
+        });
+        const data = await response.json();
+        setEvents((prevEvents) => {
+          const updatedEvents = prevEvents.map((event) => {
+            if (event.title === info.event._def.title) {
+              return {
+                ...event,
+                start: info.event._instance.range.start.toISOString().split('T')[0],
+                end: info.event._instance.range.end.toISOString().split('T')[0],
+                startdate: info.event._instance.range.start.toISOString().split('T')[0],
+                enddate: info.event._instance.range.end.toISOString().split('T')[0],
+              };
+            }
+            return event;
+          });
+          return updatedEvents;
+        });
+      } catch (error) {
+        console.error('Error fetching events:', error);
+      }
+    };
+
+    modifyEvent();
+  };
+
+const handleEventDragStop = (info) => {
   setTimeout(() => {
     const daydivs = document.getElementsByClassName("fc-daygrid-day-frame");
     const plandivs = document.getElementsByClassName("fc-daygrid-event-harness");
@@ -163,40 +227,8 @@ const handleEventDragStop = () => {
   }, 0);
 };
 
-  const handleEventResizeStop = (info) => {
-    setTimeout(() => {
-      //console.log('Event resized:', info.event);
-      const daydiv = info.el.getElementsByClassName("fc-daygrid-day-frame")[0];
-      const plandivs = info.el.getElementsByClassName("fc-daygrid-event-harness");
-      //console.log("daydiv", daydiv);
-      //console.log("plandivs", plandivs);
-      //console.log("이엘", info);
-
-      for (let i = 0; i < plandivs.length; i++) {
-        //console.log("plandivs[i]", plandivs[i]);
-        plandivs[i].addEventListener('click', (event) => {
-          const divStartX = plandivs[i].getBoundingClientRect().left;
-          const clickX = event.clientX;
-          const diffX = clickX - divStartX;
-
-          const dayDivStartX = daydiv.getBoundingClientRect().left;
-          const dayWidth = daydiv.getBoundingClientRect().width;
-          //console.log("dayWidth", dayWidth);
-
-          const test = Math.floor(diffX / dayWidth);
-          //console.log("test", test);
-
-          //console.log("div 시작점:", divStartX);
-          //console.log("클릭된 x좌표:", clickX);
-          //console.log("차이값:", diffX);
-          const newDate = new Date(info.date);
-          newDate.setDate(newDate.getDate() + test);
-          //console.log("새로운 날짜:", newDate);
-          setSelectedDate(newDate);
-          onOpen();
-        });
-      }
-    }, 0);
+  const handleEventResize = (info) => {
+    console.log("info", info);
   };
 
   const eventstest = [
@@ -224,8 +256,37 @@ const handleEventDragStop = () => {
 
   const handleSaveEvent = () => {
     if (isValid) {
-      //console.log("일정 추가:", { startDate, endDate, title });
       setIsAddingEvent(false);
+      const addEvent = async () => {
+        try {
+          const response = await fetch('/api/addevent', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              title: title,
+              startdate: new Date(startDate.year, startDate.month - 1, startDate.day),
+              enddate: new Date(endDate.year, endDate.month - 1, endDate.day),
+              description: description,
+            }),
+          });
+          const data = await response.json();
+          setEvents((prevEvents) => {
+            const newEvent = {
+              ...data.createdPlan,
+              start: new Date(startDate.year, startDate.month - 1, startDate.day).toISOString().split('T')[0],
+              end: new Date(endDate.year, endDate.month - 1, endDate.day).toISOString().split('T')[0]
+            };
+            const updatedEvents = [...prevEvents, newEvent];
+            return updatedEvents;
+          });
+        } catch (error) {
+          console.error('Error adding event:', error);
+        }
+      };
+
+      addEvent();
     }
   };
 
@@ -234,7 +295,12 @@ const handleEventDragStop = () => {
     onOpenChange(false);
   };
 
-  console.log("events", events);
+  useEffect(() => {
+    if (calendarRef.current) {
+      const calendarApi = calendarRef.current.getApi();
+      calendarApi.refetchEvents();
+    }
+  }, [events]);
 
   return (
     <>
@@ -245,6 +311,7 @@ const handleEventDragStop = () => {
     >
       <Calendar
         ref={calendarRef}
+        key={JSON.stringify(events)}
         locale={koLocale}
         height='100%'
         plugins={[
@@ -265,15 +332,9 @@ const handleEventDragStop = () => {
         selectable={true}
         dayMaxEvents={false}
         selectMirror={true}
-        resources={[
-          { id: 'a', title: 'Auditorium A', eventColor: '#EA4335' },
-          { id: 'b', title: 'Auditorium B', eventColor: '#F9AB00' },
-          { id: 'c', title: 'Auditorium C', eventColor: '#34A853' },
-          { id: 'd', title: 'Auditorium D', eventColor: '#2485F4' },
-          { id: 'e', title: 'Auditorium E', eventColor: '#888888' },
-        ]}
+        resources={colormatch}
         // initialEvents={events}
-        initialEvents={events}
+        //initialEvents={events}
         events={events}
         dayCellContent={(arg) => {
           arg.dayNumberText = arg.dayNumberText.replace('일', '');
@@ -339,6 +400,27 @@ const handleEventDragStop = () => {
         }}
         eventDragStop={handleEventDragStop}
         eventResizeStop={handleEventDragStop}
+        eventDrop={handleEventDrop}
+        eventResize={handleEventDrop}
+        eventClassNames={(arg) => {
+          const color = {
+            "#EA4335": [`via-[#EA4335]`, `to-[#EA4335]`],
+            "#F9AB00": [`via-[#F9AB00]`, `to-[#F9AB00]`],
+            "#34A853": [`via-[#34A853]`, `to-[#34A853]`],
+            "#2485F4": [`via-[#2485F4]`, `to-[#2485F4]`],
+            "#888888": [`via-[#888888]`, `to-[#888888]`],
+          };
+          if(arg.event._def.title.includes("　") && !assignedTitles.includes(arg.event._def.title)){
+            assignedTitles.push(arg.event._def.title);
+            console.log("assignedTitles", arg);
+            return [`!bg-white`, `pointer-events-none`, `bg-clip-padding`, `bg-gradient-to-r`, `from-white`, color[arg.backgroundColor][0], `via-20%`, color[arg.backgroundColor][1]];
+          }
+
+          if(arg.event._def.title.startsWith("　")){
+            return ['pointer-events-none'];
+          }
+          return [];
+        }}
       />
     </div>
     <Modal 
@@ -397,6 +479,8 @@ const handleEventDragStop = () => {
                         placeholder="내용을 입력해주세요."
                         className="w-full pt-5"
                         maxRows="3"
+                        value={description}
+                        onValueChange={setDescription}
                       />
                     </div>
                   </div>
@@ -411,7 +495,8 @@ const handleEventDragStop = () => {
                           const selectedDay = selectedDate;
                           return (
                             eventStartDate <= selectedDay &&
-                            eventEndDate >= selectedDay
+                            eventEndDate >= selectedDay &&
+                            event.description // detail이 있는지 확인
                           );
                         })
                         .map((event, index) => (
@@ -425,7 +510,7 @@ const handleEventDragStop = () => {
                             title={
                               <>
                                 <div className='flex flex-row'>
-                                  <div className='flex flex-shrink-0 w-1 mr-2 bg-[#ff4d02]'></div>
+                                  <div className='flex flex-shrink-0 w-1 mr-2' style={{ backgroundColor: colormatch.find(color => color.id === event.resourceId)?.eventColor }}></div>
                                   <div>{event.title}</div>
                                 </div>
                               </>
@@ -437,26 +522,38 @@ const handleEventDragStop = () => {
                     </Accordion>
                     <Divider className='my-5'/>
                     <p className='text-sm mb-[10px] font-bold text-[#888888]'>개인일정</p>
-                    <Accordion variant="splitted"
-                    className='px-0'
-                    >
-                      <AccordionItem key="2" 
-                      classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
-                      aria-label="Accordion 2" title="데이트💗">
-                      2024학년도 동계 학부연구생 모집 안내
-                      </AccordionItem>
-                      <AccordionItem key="3" 
-                      classNames={{title: 'font-bold text-xl', content: 'font-bold text-base text-[#888888]'}} 
-                      aria-label="Accordion 3" 
-                      title={<>
-                        <div className='flex flex-row'>
-                        <div className='flex flex-shrink-0 w-1 mr-2 bg-[#ff4d02]'></div>
-                          <div>동아리 회의</div>
-                        </div>
-                      </>}
-                      >
-                      학과별 재학생 대상 전공능력진단 실시 안내
-                      </AccordionItem>
+                    <Accordion variant="splitted" className='px-0'>
+                      {events
+                        .filter(event => {
+                          const eventStartDate = new Date(event.start);
+                          const eventEndDate = new Date(event.end);
+                          const selectedDay = selectedDate;
+                          return (
+                            eventStartDate <= selectedDay &&
+                            eventEndDate >= selectedDay &&
+                            !event.description // detail이 없는지 확인
+                          );
+                        })
+                        .map((event, index) => (
+                          <AccordionItem
+                            classNames={{
+                              title: 'font-bold text-xl',
+                              content: 'font-bold text-base text-[#888888]',
+                            }}
+                            key={index}
+                            aria-label={`Accordion ${index + 1}`}
+                            title={
+                              <>
+                                <div className='flex flex-row'>
+                                  <div className='flex flex-shrink-0 w-1 mr-2' style={{ backgroundColor: colormatch.find(color => color.id === event.resourceId)?.eventColor }}></div>
+                                  <div>{event.title}</div>
+                                </div>
+                              </>
+                            }
+                          >
+                            {event.description}
+                          </AccordionItem>
+                        ))}
                     </Accordion>
                   </div>
                 )}
@@ -473,7 +570,7 @@ const handleEventDragStop = () => {
                     일정 추가
                   </Button>
                 ) : (
-                  <Button onClick={handleAddEventClick} className='w-full text-white'>일정 추가</Button>
+                  <Button onClick={handleAddEventClick} className='w-full text-white bg-blue-600'>일정 추가</Button>
                 )}
               </ModalFooter>
             </>

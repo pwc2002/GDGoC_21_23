@@ -76,6 +76,7 @@ body {
 
 .fc-event-title {
   padding:0px !important;
+  padding-left: 20px !important;
 }
 
 .fc-daygrid-event{
