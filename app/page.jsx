@@ -17,6 +17,7 @@ export default function Home() {
   const touchStartX = useRef(0);
   const router = useRouter();
   const { data: session } = useSession();
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     console.log("Session data:", session);
@@ -82,11 +83,11 @@ export default function Home() {
           {isCategoryVisible ? (
             <Category toggleChecklist={toggleChecklist} setIsCategoryVisible={setIsCategoryVisible} setShowTitle={setShowTitle} />
           ) : (
-            <Checklist toggleChecklist={toggleChecklist} setIsCategoryVisible={setIsCategoryVisible} showTitle={showTitle}/>
+            <Checklist toggleChecklist={toggleChecklist} setIsCategoryVisible={setIsCategoryVisible} showTitle={showTitle} setEvents={setEvents} events={events}/>
           )}
         </div>
       </div>
-      <FullCalendar />
+      <FullCalendar setEvents={setEvents} events={events}/>
     </div>
   );
 }

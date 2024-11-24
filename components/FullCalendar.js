@@ -13,7 +13,7 @@ import { DatePicker } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/input";
 import { useSession } from 'next-auth/react';
 
-export default function FullCalendar() {
+export default function FullCalendar({setEvents, events}) {
   const { data: session } = useSession();
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const calendarRef = useRef(null);
@@ -28,7 +28,6 @@ export default function FullCalendar() {
   const [description, setDescription] = useState("");
   const [isValid, setIsValid] = useState(false);
   const [dateError, setDateError] = useState(false);
-  const [events, setEvents] = useState([]);
   const [colormatch, setColormatch] = useState([
     { id: 'a', title: 'Auditorium A', eventColor: '#EA4335' },
     { id: 'b', title: 'Auditorium B', eventColor: '#F9AB00' },
@@ -37,6 +36,7 @@ export default function FullCalendar() {
     { id: 'e', title: 'Auditorium E', eventColor: '#888888' },
   ]);
   const assignedTitles = [];
+
 
   useEffect(() => {
     if (session && session.user) {
@@ -284,18 +284,31 @@ const handleEventDragStop = (info) => {
             },
             body: JSON.stringify({
               title: title,
-              startdate: new Date(startDate.year, startDate.month - 1, startDate.day),
-              enddate: new Date(endDate.year, endDate.month - 1, endDate.day),
+              startdate: new Date(startDate.year, startDate.month - 1, startDate.day+1),
+              enddate: new Date(endDate.year, endDate.month - 1, endDate.day+2),
               description: description,
             }),
           });
           const data = await response.json();
           setEvents((prevEvents) => {
-            const newEvent = {
+            let newEvent = {
               ...data.createdPlan,
-              start: new Date(startDate.year, startDate.month - 1, startDate.day).toISOString().split('T')[0],
-              end: new Date(endDate.year, endDate.month - 1, endDate.day).toISOString().split('T')[0]
+              start: new Date(startDate.year, startDate.month - 1, startDate.day+1).toISOString().split('T')[0],
+              end: new Date(endDate.year, endDate.month - 1, endDate.day+2).toISOString().split('T')[0],
+              resourceId: ['a', 'b', 'c', 'd'][Math.floor(Math.random() * 4)],
             };
+
+            const startDateObj = new Date(newEvent.start);
+            const endDateObj = new Date(newEvent.end);
+            const diffTime = Math.abs(endDateObj - startDateObj);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays > 7) {
+              newEvent.start = new Date(endDateObj.setDate(endDateObj.getDate() - 7)).toISOString().split('T')[0];
+              newEvent.title = newEvent.title + "　";
+              console.log("newEvent", newEvent);
+            }
+
             const updatedEvents = [...prevEvents, newEvent];
             return updatedEvents;
           });
@@ -438,7 +451,7 @@ const handleEventDragStop = (info) => {
             return [`!bg-white`, `pointer-events-none`, `bg-clip-padding`, `bg-gradient-to-r`, `from-white`, color[arg.backgroundColor][0], `via-20%`, color[arg.backgroundColor][1]];
           }
 
-          if(arg.event._def.title.startsWith("　")){
+          if(arg.event._def.title.includes("　")){
             return ['pointer-events-none'];
           }
           return [];
@@ -513,11 +526,13 @@ const handleEventDragStop = (info) => {
                       {events
                         .filter(event => {
                           const eventStartDate = new Date(event.start);
+                          //eventStartDate.setDate(eventStartDate.getDate() - 1); // startDate를 하루 뺀 날짜로 설정
                           const eventEndDate = new Date(event.end);
-                          const selectedDay = selectedDate;
+                          const selectedDay = new Date(selectedDate);
+                          selectedDay.setDate(selectedDay.getDate() + 1); // selectedDay에 하루를 더함
                           return (
-                            eventStartDate <= selectedDay &&
-                            eventEndDate >= selectedDay &&
+                            eventStartDate.toISOString().split('T')[0] <= selectedDay.toISOString().split('T')[0] &&
+                            eventEndDate.toISOString().split('T')[0] > selectedDay.toISOString().split('T')[0] &&
                             event.description // detail이 있는지 확인
                           );
                         })
@@ -549,10 +564,14 @@ const handleEventDragStop = (info) => {
                         .filter(event => {
                           const eventStartDate = new Date(event.start);
                           const eventEndDate = new Date(event.end);
-                          const selectedDay = selectedDate;
+                          const selectedDay = new Date(selectedDate);
+                          selectedDay.setDate(selectedDay.getDate() + 1); // selectedDay에 하루를 더함
+                          console.log(eventStartDate.getDate(), eventEndDate.getDate(), selectedDay.getDate());
+                          console.log(eventStartDate.toISOString().split('T')[0], eventEndDate.toISOString().split('T')[0], selectedDay.toISOString().split('T')[0]);
+                          console.log(eventStartDate.toISOString().split('T')[0] <= selectedDay.toISOString().split('T')[0], eventEndDate.toISOString().split('T')[0] > selectedDay.toISOString().split('T')[0]);
                           return (
-                            eventStartDate <= selectedDay &&
-                            eventEndDate >= selectedDay &&
+                            eventStartDate.toISOString().split('T')[0] <= selectedDay.toISOString().split('T')[0] &&
+                            eventEndDate.toISOString().split('T')[0] > selectedDay.toISOString().split('T')[0] &&
                             !event.description // detail이 없는지 확인
                           );
                         })
