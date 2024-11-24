@@ -51,16 +51,19 @@ export default function Checklist({ toggleChecklist, setIsCategoryVisible, showT
   }, [showTitle]);
 
   const handleCheckboxChange = async (notice) => {
+    console.log(notice);
     const isChecked = myPlan.some(plan => plan.title === notice.title);
     const updatedPlan = isChecked
-      ? myPlan.filter(plan => plan.title !== notice.title)
-      : [...myPlan, { title: notice.title }];
+      ? myPlan.filter(plan => plan.title !== notice.title) // 체크가 되어 있었으면, 필터링으로 제외 후 저장
+      : [...myPlan, notice]; // 체크가 되어 있지 않았으면, 기존 배열에 추가 후 저장
+
+    console.log(updatedPlan);
 
     setMyPlan(updatedPlan);
 
     try {
       await fetch('/api/myplan', {
-        method: isChecked ? 'DELETE' : 'CREATE',
+        method: isChecked ? 'DELETE' : 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
