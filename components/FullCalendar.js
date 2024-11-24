@@ -533,7 +533,7 @@ const handleEventDragStop = (info) => {
                           return (
                             eventStartDate.toISOString().split('T')[0] <= selectedDay.toISOString().split('T')[0] &&
                             eventEndDate.toISOString().split('T')[0] > selectedDay.toISOString().split('T')[0] &&
-                            event.description // detail이 있는지 확인
+                            event.detail // detail이 있는지 확인
                           );
                         })
                         .map((event, index) => (
@@ -574,7 +574,7 @@ const handleEventDragStop = (info) => {
                           return (
                             eventStartDate.toISOString().split('T')[0] <= selectedDay.toISOString().split('T')[0] &&
                             eventEndDate.toISOString().split('T')[0] > selectedDay.toISOString().split('T')[0] &&
-                            !event.description // detail이 없는지 확인
+                            !event.detail // detail이 없는지 확인
                           );
                         })
                         .map((event, index) => (
