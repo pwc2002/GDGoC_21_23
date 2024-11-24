@@ -13,6 +13,7 @@ import { useSession } from 'next-auth/react';
 export default function Home() {
   const [isChecklistOpen, setIsChecklistOpen] = useState(false);
   const [isCategoryVisible, setIsCategoryVisible] = useState(true);
+  const [showTitle, setShowTitle] = useState("");
   const touchStartX = useRef(0);
   const router = useRouter();
   const { data: session } = useSession();
@@ -69,16 +70,16 @@ export default function Home() {
         }}
       />
       <div
-        className={`absolute top-0 left-0 h-full bg-white transition-transform transform ${isChecklistOpen ? 'translate-x-0' : '-translate-x-full'} z-50`}
+        className={`absolute top-0 left-0 h-full w-full bg-white transition-transform transform ${isChecklistOpen ? 'translate-x-0' : '-translate-x-full'} z-50`}
         onClick={(e) => e.stopPropagation()}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
       >
         <div className="p-5">
           {isCategoryVisible ? (
-            <Category toggleChecklist={toggleChecklist} setIsCategoryVisible={setIsCategoryVisible} />
+            <Category toggleChecklist={toggleChecklist} setIsCategoryVisible={setIsCategoryVisible} setShowTitle={setShowTitle} />
           ) : (
-            <Checklist toggleChecklist={toggleChecklist} />
+            <Checklist toggleChecklist={toggleChecklist} setIsCategoryVisible={setIsCategoryVisible} showTitle={showTitle}/>
           )}
         </div>
       </div>

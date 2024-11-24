@@ -5,22 +5,33 @@ import { Switch } from "@nextui-org/react";
 import { Button, ButtonGroup } from "@nextui-org/button";
 import { useSession, signOut } from "next-auth/react";
 import { useState } from "react";
+import { CloseIcon } from "@/public/CloseIcon";
+import { useRouter } from "next/navigation";
+
 export default function App() {
   const { data: session } = useSession();
   const [isBlindMode, setIsBlindMode] = useState(session?.user?.mode);
+  const router = useRouter();
 
   return (
     <>
-      <div className="flex flex-col absolute top-20 pl-3">
+      <div className="flex flex-col absolute top-5 pl-3">
+        <div className="flex w-full justify-end items-center mb-7 pr-6">
+          <div className="cursor-pointer" onClick={()=>{
+            router.back();
+          }}>
+            <CloseIcon />
+          </div>
+        </div>
         <table className="border-collapse w-full">
           <tbody>
             <tr>
-              <td className="p-4 w-24" rowSpan="2">
+              <td className="pr-4 w-24" rowSpan="2">
                 <Avatar name={session?.user?.username} className="w-24 h-24" src={session?.user?.image} />
               </td>
               <td className="text-2xl font-bold relative top-3" colSpan="2">
                 <p>{session?.user?.username}</p>
-                <p className="text-xs text-gray-400 font-normal">{session?.user?.major}</p>
+                <p className="text-xs text-gray-400 font-normal mb-2">{session?.user?.major}</p>
               </td>
             </tr>
             <tr>

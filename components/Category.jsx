@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import React, { useState } from 'react';
 
-export default function Category({ toggleChecklist, setIsCategoryVisible }) {
+export default function Category({ toggleChecklist, setIsCategoryVisible, setShowTitle }) {
     const [showEmployment, setShowEmployment] = useState(false);
     const [showDepartment, setShowDepartment] = useState(false);
     const [showScholarship, setShowScholarship] = useState(false);
@@ -54,11 +54,11 @@ export default function Category({ toggleChecklist, setIsCategoryVisible }) {
                     </button>
                     {showEmployment && (
                         <div className="flex flex-col pl-5 text-xl text-gray-400 space-y-2">
-                            <p onClick={()=>{setIsCategoryVisible(false)}}>취업 공지/후기</p>
-                            <p>민원신청/불편 신고</p>
-                            <p>학교발전 건의함</p>
-                            <p>분실물 센터</p>
-                            <p>인하 장터</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","전체"])}}>전체</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","학사"])}}>학사</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","장학"])}}>장학</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","특강"])}}>특강</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","모집/채용"])}}>모집/채용</p>
                         </div>
                     )}
                     <br/>
@@ -67,10 +67,10 @@ export default function Category({ toggleChecklist, setIsCategoryVisible }) {
                     </button>
                     {showDepartment && (
                         <div className="flex flex-col pl-5 text-xl text-gray-400 space-y-2">
-                            <p>학부</p>
-                            <p>대학원</p>
-                            <p>학과</p>
-                            <p>교내</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["학과","학부"])}}>학부</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["학과","대학원"])}}>대학원</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["학과","학과"])}}>학과</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["학과","교내"])}}>교내</p>
                         </div>
                     )}
                     <br/>
@@ -79,24 +79,15 @@ export default function Category({ toggleChecklist, setIsCategoryVisible }) {
                     </button>
                     {showScholarship && (
                         <div className="flex flex-col pl-5 text-xl text-gray-400 space-y-2">
-                            <p>학부-국가장학</p>
-                            <p>학부-교내장학</p>
-                            <p>학부-교외장학</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["장학금","학부-국가장학"])}}>학부-국가장학</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["장학금","학부-교내장학"])}}>학부-교내장학</p>
+                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["장학금","학부-교외장학"])}}>학부-교외장학</p>
                         </div>
                     )}
                     <br/>
-                    <button onClick={handleClubClick} className="mt-6 mb-2 text-left focus:outline-none">
+                    <button className="mt-6 mb-2 text-left focus:outline-none" onClick={()=>{setIsCategoryVisible(false); setShowTitle(["동아리","동아리 안내"])}}>
                         동아리 안내
                     </button>
-                    {showClub && (
-                        <div className="flex flex-col pl-5 text-xl text-gray-400 space-y-2">
-                            <p>중앙동아리</p>
-                            <p>학생회</p>
-                            <p>소모임(단과대학)</p>
-                            <p>소모임(학부,과,일반대학원)</p>
-                            <p>기타</p>
-                        </div>
-                    )}
                 </div>
             </div>
         </>
