@@ -74,7 +74,8 @@ export default function Checklist({ toggleChecklist, setIsCategoryVisible, showT
     }
   };
 
-  const handleTitleClick = (id) => {
+  const handleTitleClick = (e, id) => {
+    e.preventDefault();
     setActiveNotice(id === activeNotice ? null : id);
   };
 
@@ -110,7 +111,7 @@ export default function Checklist({ toggleChecklist, setIsCategoryVisible, showT
             >
               <span
                 className="break-keep cursor-pointer"
-                onClick={() => handleTitleClick(notice.id)}
+                onClick={(e) => handleTitleClick(e, notice.id)}
               >
                 {notice.title}
               </span>

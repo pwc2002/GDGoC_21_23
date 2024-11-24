@@ -11,8 +11,10 @@ import {Divider} from "@nextui-org/react";
 import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, useDisclosure, RadioGroup, Radio, Accordion, AccordionItem, Input} from "@nextui-org/react";
 import { DatePicker } from "@nextui-org/react";
 import { Textarea } from "@nextui-org/input";
+import { useSession } from 'next-auth/react';
 
 export default function FullCalendar() {
+  const { data: session } = useSession();
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const calendarRef = useRef(null);
   const touchStartX = useRef(0);
@@ -35,6 +37,21 @@ export default function FullCalendar() {
     { id: 'e', title: 'Auditorium E', eventColor: '#888888' },
   ]);
   const assignedTitles = [];
+
+  useEffect(() => {
+    if (session && session.user) {
+      console.log("session", session);
+      if (session.user.mode === 1) {
+        setColormatch([
+          { id: 'a', title: 'Auditorium A', eventColor: '#D55E00' },
+          { id: 'b', title: 'Auditorium B', eventColor: '#E79F00' },
+          { id: 'c', title: 'Auditorium C', eventColor: '#019E73' },
+          { id: 'd', title: 'Auditorium D', eventColor: '#0072B1' },
+          { id: 'e', title: 'Auditorium E', eventColor: '#888888' },
+        ]);
+      }
+    }
+  }, [session]);
 
 
   useEffect(() => {
@@ -77,6 +94,7 @@ export default function FullCalendar() {
           end: new Date(event.enddate).toISOString().split('T')[0],
           resourceId: ['a', 'b', 'c', 'd'][data.myplan.indexOf(event) % 4],
         }));
+        
         console.log("events", processedEvents);
         setEvents(processedEvents || []);
       } catch (error) {
@@ -409,6 +427,10 @@ const handleEventDragStop = (info) => {
             "#34A853": [`via-[#34A853]`, `to-[#34A853]`],
             "#2485F4": [`via-[#2485F4]`, `to-[#2485F4]`],
             "#888888": [`via-[#888888]`, `to-[#888888]`],
+            "#D55E00": [`via-[#D55E00]`, `to-[#D55E00]`],
+            "#E79F00": [`via-[#E79F00]`, `to-[#E79F00]`],
+            "#019E73": [`via-[#019E73]`, `to-[#019E73]`],
+            "#0072B1": [`via-[#0072B1]`, `to-[#0072B1]`],
           };
           if(arg.event._def.title.includes("　") && !assignedTitles.includes(arg.event._def.title)){
             assignedTitles.push(arg.event._def.title);

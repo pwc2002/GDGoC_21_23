@@ -25,16 +25,18 @@ export default function MoreDetail({toggleChecklist, notice, setActiveNotice}) {
         <BackIcon />
       </div>
       <div className="pt-12">
-        <div className="pl-14 text-xs font-bold text-gray-400">학과 공지사항</div>
-        <div className="pl-5">
-          <Checkbox defaultSelected className="font-bold text-2xl" size="lg">
+        <div className="pl-5 text-xs font-bold text-gray-400">학과 공지사항</div>
+        <div className="pl-5 font-bold text-2xl text-black">
             {notice.title}
-          </Checkbox>
         </div>
         <div className="pl-5 pt-12 font-bold text-gray-500 text-base">
-          <h2 className="pb-3">
-            {notice.description}
-            <br/>
+          <h2 className="pb-3 overflow-y-scroll h-[calc(100vh-180px)] overflow-x-hidden">
+            {notice.description.split('\n').map((line, index) => (
+              <span key={index}>
+                {line}
+                <br />
+              </span>
+            ))}
           </h2>
         </div>
         <div className="pl-5">

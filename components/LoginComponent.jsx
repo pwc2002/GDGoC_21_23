@@ -22,19 +22,19 @@ export default function LoginComponent({ setViewPage }) {
         <button onClick={() => signIn('kakao')} className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
           <Image src="/카톡버튼.png" alt="KakaoTalk Icon" width={330} height={50} />
         </button>
-        <button className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
+        {/* <button className="flex items-center justify-center w-full border-none outline-none rounded-full py-2">
           <Image src="/애플버튼.png" alt="Apple Icon" width={330} height={50} />
-        </button>
+        </button> */}
       </div>
       
-      <div className="flex items-center w-full max-w-sm my-4">
+      {/* <div className="flex items-center w-full max-w-sm my-4">
         <div className="flex-grow border-t border-gray-300"></div>
         <span className="mx-2 text-gray-500">또는</span>
         <div className="flex-grow border-t border-gray-300"></div>
       </div>
         <button className="text-gray-500 underline" onClick={()=>{
           setViewPage('signup1');
-        }}>다른 이메일로 로그인하기</button>
+        }}>다른 이메일로 로그인하기</button> */}
     </div>
   );
 }
