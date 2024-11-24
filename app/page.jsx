@@ -20,6 +20,9 @@ export default function Home() {
 
   useEffect(() => {
     console.log("Session data:", session);
+    if(session == null){
+      router.push('/login');
+    }
   }, [session]);
 
   const toggleChecklist = () => {
