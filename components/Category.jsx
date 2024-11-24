@@ -54,9 +54,7 @@ export default function Category({ toggleChecklist, setIsCategoryVisible, setSho
                     </button>
                     {showEmployment && (
                         <div className="flex flex-col pl-5 text-xl text-gray-400 space-y-2">
-                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","전체"])}}>전체</p>
                             <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","학사"])}}>학사</p>
-                            <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","장학"])}}>장학</p>
                             <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","특강"])}}>특강</p>
                             <p onClick={()=>{setIsCategoryVisible(false); setShowTitle(["전체","모집/채용"])}}>모집/채용</p>
                         </div>
