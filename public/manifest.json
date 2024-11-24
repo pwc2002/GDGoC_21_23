@@ -1,6 +1,6 @@
 {
-    "name": "앱 이름",
-    "short_name": "앱 이름",
+    "name": "Cal-Up",
+    "short_name": "Cal-Up",
     "icons": [
       {
         "src": "/icon.png",
