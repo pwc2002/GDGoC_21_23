@@ -88,6 +88,11 @@ const authOptions = {
       if(trigger === "update" && session?.user?.major){
         token.major = session.user.major;
         token.college = session.user.college;
+        token.mode = session.user.mode;
+      }
+      if(trigger === "update" && session?.mode !== undefined) {
+        token.mode = session.mode;
+        console.log("JWT updated with new mode:", token.mode);
       }
       return token;
     },
