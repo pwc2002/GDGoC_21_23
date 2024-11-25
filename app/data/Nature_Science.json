@@ -1,26 +1,6 @@
 [
   {
-      "key": "Mathematics",
-      "label": "수학과"
-  },
-  {
-      "key": "Statistics",
-      "label": "통계학과"
-  },
-  {
-      "key": "Physics",
-      "label": "물리학과"
-  },
-  {
       "key": "Chemistry", 
       "label": "화학과"
-  },
-  {
-      "key": "Ocean_Sciences",
-      "label": "해양과학과"
-  },
-  {
-      "key": "Food_&_Nutrition",
-      "label": "식품영양학과"
   }
 ]
