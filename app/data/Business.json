@@ -1,22 +1,6 @@
 [
   {
-    "key": "Business_Administration",
-    "label": "경영학과"
-  },
-  {
-    "key": "Global_Finance_Banking",
-    "label": "글로벌금융학과"
-  },
-  {
     "key": "Asia_Pacific_School_Logistics",
     "label": "아태물류학부"
-  },
-  {
-    "key": "International_Trade",
-    "label": "국제통상학과"
-  },
-  {
-    "key": "Future_Industry_Management",
-    "label": "기후위기대응(융합전공)"
   }
 ]

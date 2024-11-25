@@ -12,19 +12,10 @@ import { useRouter } from 'next/navigation';
 // 데이터를 직접 import
 import colleges from "../app/data/Colleges.json";
 import engineering from "../app/data/Engineering.json";
-import liberalarts from "../app/data/Prontier.json";
-import arts_sports from "../app/data/Arts_Sports.json";
-import bio from "../app/data/Bio.json";
 import business from "../app/data/Business.json";
-import future_Convergence from "../app/data/Future_Convergence.json";
-import global_Convergence from "../app/data/Global_Convergence.json";
 import humanities from "../app/data/Humanities.json";
-import medicine from "../app/data/Medicine.json";
 import nature_science from "../app/data/Nature_Science.json";
-import nursing from "../app/data/Nursing.json";
-import social_science from "../app/data/Social_Science.json";
 import software_convergence from "../app/data/Software_Convergence.json";
-import teaching from "../app/data/Teaching.json";
 import { useSession } from 'next-auth/react';
 
 
@@ -35,21 +26,12 @@ export default function Signup2Component({ setViewPage }) {
   const router = useRouter();
   const { data: session, update } = useSession();
   // 단과대학별 학과 데이터 매핑
-  const departmentMap = {
-    Prontier: liberalarts, // 프런티어 학부 데이터 매핑
+  const departmentMap = { // 프런티어 학부 데이터 매핑
     Engineering: engineering,
     Nature_Science: nature_science,
     Business: business,
-    Teaching: teaching,
-    Social_Science: social_science,
     Humanities: humanities,
-    Medicine: medicine,
-    Nursing: nursing,
-    Future_Convergence: future_Convergence,
-    Arts_Sports: arts_sports,
-    Global_Convergence: global_Convergence,
-    Software_Convergence: software_convergence,
-    Bio: bio,
+    Software_Convergence: software_convergence
   };
 
   // 단과대학 선택 처리
